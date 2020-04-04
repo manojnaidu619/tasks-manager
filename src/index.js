@@ -12,7 +12,7 @@ app.post("/users", (req, res) => {
     const data = req.body
     const user = new User(data)
     user.save()
-        .then((result) => res.send({message: "User Added", result: result._doc}))
+        .then((result) => res.status(201).send({message: "User Added", result: result._doc}))
         .catch((error) => res.status(400).send({error: error.message}))
 })
 
@@ -20,8 +20,30 @@ app.post("/tasks", (req, res) => {
     const data = req.body
     const task = new Task(data)
     task.save()
-        .then((result) => res.send({message: "Task Added", result: result._doc}))
+        .then((result) => res.status(201).send({message: "Task Added", result: result._doc}))
         .catch((error) => res.status(400).send({error: error.message}))
+})
+
+app.get("/users", (req, res) => {
+    User.find({})
+        .then((users) => res.status(200).send(users))
+        .catch((error) => res.status(500).send())
+})
+
+app.get("/users/:id", (req, res) => {
+    const id = req.params.id
+    User.findById(id)
+        .then((user) => {
+            if (!user) {
+                return res.status(404).send()
+            }
+            res.status(200).send(user)
+        })
+        .catch((error) => res.status(500).send(error))
+})
+
+app.get("*", (req, res) => {
+    res.send({error: "Invalid URI"})
 })
 
 app.listen(port, () => {
