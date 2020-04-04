@@ -42,6 +42,24 @@ app.get("/users/:id", (req, res) => {
         .catch((error) => res.status(500).send(error))
 })
 
+app.get("/tasks", (req, res) => {
+    Task.find({})
+        .then((tasks) => res.status(200).send(tasks))
+        .catch((error) => res.status(500).send(error))
+})
+
+app.get("/tasks/:id", (req, res) => {
+    const id = req.params.id
+    Task.findById(id)
+        .then((task) => {
+            if (!task) {
+                return res.status(404).send()
+            }
+            res.status(200).send(task)
+        })
+        .catch((error) => res.status(500).send())
+})
+
 app.get("*", (req, res) => {
     res.send({error: "Invalid URI"})
 })
