@@ -74,6 +74,20 @@ app.get("/tasks/:id", async (req, res) => {
     }
 })
 
+app.patch("/users/:id", async (req, res) => {
+    const id = req.params.id
+    try {
+        const user = await User.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
+        if (!user) {
+            return res.status(404).send()
+        }
+        res.status(200).send(user)        
+    } catch (e) {
+        res.status(500).send(e)
+    }
+
+})
+
 app.get("*", (req, res) => {
     res.send({error: "Invalid URI"})
 })
